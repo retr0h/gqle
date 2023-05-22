@@ -1,41 +1,57 @@
 package database
 
 import (
-	"fmt"
-
-	"go-graphql-api/dbmodel"
-	"gorm.io/driver/sqlite" // Sqlite driver based on GGO
+	"github.com/retr0h/gqle/config"
+	"github.com/retr0h/gqle/dbmodel"
+	"github.com/sirupsen/logrus"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	sqllogger "gorm.io/gorm/logger"
 )
 
-var (
-	DBInstance *gorm.DB
-	err        error
-)
+// Database handles database access
+type Database struct {
+	config   *config.Config
+	logger   *logrus.Logger
+	Database *gorm.DB
+}
 
-// connecting to the db
-func ConnectDB() {
-	DBInstance, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+// Connect connect to the database and populate the structs Database field
+func (db *Database) Connect() {
+	gormConfig := &gorm.Config{}
+	if db.config.Debug {
+		gormConfig.Logger = sqllogger.Default.LogMode(sqllogger.Info)
+	}
+
+	instance, err := gorm.Open(sqlite.Open(db.config.DSN), gormConfig)
 	if err != nil {
-		fmt.Println(err)
-		panic("Database connection attempt was unsuccessful.....")
+		db.logger.Fatalf("Database connection failed: %s", err)
 	} else {
-		fmt.Println("Database Connected successfully.....")
+		db.Database = instance
+		db.logger.WithFields(logrus.Fields{
+			"DBName": db.config.DBName,
+			"DSN":    db.config.DSN,
+		}).Info("Database connected successfully")
 	}
 }
 
-func CreateDB() {
-	// Create a database
-	DBInstance.Exec("CREATE DATABASE IF NOT EXISTS Blog_Posts")
-	// make the database available to this connection
-	DBInstance.Exec("USE Blog_Posts")
+// Migrate migrate the database
+func (db *Database) Migrate() {
+	db.Database.AutoMigrate(&dbmodel.Post{})
+	db.Database.AutoMigrate(&dbmodel.VPC{})
+	db.logger.WithFields(logrus.Fields{
+		"DBName": db.config.DBName,
+		"DSN":    db.config.DSN,
+	}).Info("Database migration completed")
 }
 
-func MigrateDB() {
-	// migrate and sync the model to create a db table
-	DBInstance.AutoMigrate(&dbmodel.Post{})
-	fmt.Println("Database migration completed....")
+// New create a new database instance
+func New(
+	config *config.Config,
+	logger *logrus.Logger,
+) *Database {
+	return &Database{
+		config: config,
+		logger: logger,
+	}
 }

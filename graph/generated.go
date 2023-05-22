@@ -47,7 +47,9 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Mutation struct {
 		CreatePost func(childComplexity int, input model.NewPost) int
+		CreateVpc  func(childComplexity int, input model.NewVpc) int
 		UpdatePost func(childComplexity int, postID int, input *model.NewPost) int
+		UpdateVpc  func(childComplexity int, postID int, input *model.NewVpc) int
 	}
 
 	Post struct {
@@ -62,17 +64,35 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetAllPosts func(childComplexity int) int
+		GetAllVPCs  func(childComplexity int) int
 		GetOnePost  func(childComplexity int, id int) int
+		GetOneVpc   func(childComplexity int, id int) int
+	}
+
+	VPC struct {
+		AmazonProvidedIpv6CidrBlock func(childComplexity int) int
+		CidrBlock                   func(childComplexity int) int
+		EnableDNSHostNames          func(childComplexity int) int
+		EnableDNSSupport            func(childComplexity int) int
+		ID                          func(childComplexity int) int
+		InstanceTenancy             func(childComplexity int) int
+		Ipv6CidrBlock               func(childComplexity int) int
+		Ipv6Pool                    func(childComplexity int) int
+		Region                      func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
 	CreatePost(ctx context.Context, input model.NewPost) (*model.Post, error)
 	UpdatePost(ctx context.Context, postID int, input *model.NewPost) (*model.Post, error)
+	CreateVpc(ctx context.Context, input model.NewVpc) (*model.Vpc, error)
+	UpdateVpc(ctx context.Context, postID int, input *model.NewVpc) (*model.Vpc, error)
 }
 type QueryResolver interface {
 	GetAllPosts(ctx context.Context) ([]*model.Post, error)
 	GetOnePost(ctx context.Context, id int) (*model.Post, error)
+	GetAllVPCs(ctx context.Context) ([]*model.Vpc, error)
+	GetOneVpc(ctx context.Context, id int) (*model.Vpc, error)
 }
 
 type executableSchema struct {
@@ -102,6 +122,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreatePost(childComplexity, args["input"].(model.NewPost)), true
 
+	case "Mutation.CreateVPC":
+		if e.complexity.Mutation.CreateVpc == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_CreateVPC_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateVpc(childComplexity, args["input"].(model.NewVpc)), true
+
 	case "Mutation.UpdatePost":
 		if e.complexity.Mutation.UpdatePost == nil {
 			break
@@ -113,6 +145,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdatePost(childComplexity, args["PostId"].(int), args["input"].(*model.NewPost)), true
+
+	case "Mutation.UpdateVPC":
+		if e.complexity.Mutation.UpdateVpc == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdateVPC_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateVpc(childComplexity, args["PostId"].(int), args["input"].(*model.NewVpc)), true
 
 	case "Post.Author":
 		if e.complexity.Post.Author == nil {
@@ -170,6 +214,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetAllPosts(childComplexity), true
 
+	case "Query.GetAllVPCs":
+		if e.complexity.Query.GetAllVPCs == nil {
+			break
+		}
+
+		return e.complexity.Query.GetAllVPCs(childComplexity), true
+
 	case "Query.GetOnePost":
 		if e.complexity.Query.GetOnePost == nil {
 			break
@@ -182,6 +233,81 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetOnePost(childComplexity, args["id"].(int)), true
 
+	case "Query.GetOneVPC":
+		if e.complexity.Query.GetOneVpc == nil {
+			break
+		}
+
+		args, err := ec.field_Query_GetOneVPC_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetOneVpc(childComplexity, args["id"].(int)), true
+
+	case "VPC.AmazonProvidedIpv6CidrBlock":
+		if e.complexity.VPC.AmazonProvidedIpv6CidrBlock == nil {
+			break
+		}
+
+		return e.complexity.VPC.AmazonProvidedIpv6CidrBlock(childComplexity), true
+
+	case "VPC.CidrBlock":
+		if e.complexity.VPC.CidrBlock == nil {
+			break
+		}
+
+		return e.complexity.VPC.CidrBlock(childComplexity), true
+
+	case "VPC.EnableDnsHostNames":
+		if e.complexity.VPC.EnableDNSHostNames == nil {
+			break
+		}
+
+		return e.complexity.VPC.EnableDNSHostNames(childComplexity), true
+
+	case "VPC.EnableDnsSupport":
+		if e.complexity.VPC.EnableDNSSupport == nil {
+			break
+		}
+
+		return e.complexity.VPC.EnableDNSSupport(childComplexity), true
+
+	case "VPC.id":
+		if e.complexity.VPC.ID == nil {
+			break
+		}
+
+		return e.complexity.VPC.ID(childComplexity), true
+
+	case "VPC.InstanceTenancy":
+		if e.complexity.VPC.InstanceTenancy == nil {
+			break
+		}
+
+		return e.complexity.VPC.InstanceTenancy(childComplexity), true
+
+	case "VPC.Ipv6CidrBlock":
+		if e.complexity.VPC.Ipv6CidrBlock == nil {
+			break
+		}
+
+		return e.complexity.VPC.Ipv6CidrBlock(childComplexity), true
+
+	case "VPC.Ipv6Pool":
+		if e.complexity.VPC.Ipv6Pool == nil {
+			break
+		}
+
+		return e.complexity.VPC.Ipv6Pool(childComplexity), true
+
+	case "VPC.Region":
+		if e.complexity.VPC.Region == nil {
+			break
+		}
+
+		return e.complexity.VPC.Region(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -191,6 +317,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputNewPost,
+		ec.unmarshalInputNewVPC,
 	)
 	first := true
 
@@ -250,7 +377,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(parsedSchema, parsedSchema.Types[name]), nil
 }
 
-//go:embed "schema.graphqls"
+//go:embed "schema.graphqls" "vpc.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -263,6 +390,7 @@ func sourceData(filename string) string {
 
 var sources = []*ast.Source{
 	{Name: "schema.graphqls", Input: sourceData("schema.graphqls"), BuiltIn: false},
+	{Name: "vpc.graphqls", Input: sourceData("vpc.graphqls"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -277,6 +405,21 @@ func (ec *executionContext) field_Mutation_CreatePost_args(ctx context.Context, 
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewPost2goᚑgraphqlᚑapiᚋgraphᚋmodelᚐNewPost(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_CreateVPC_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewVpc
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewVPC2goᚑgraphqlᚑapiᚋgraphᚋmodelᚐNewVpc(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -309,7 +452,46 @@ func (ec *executionContext) field_Mutation_UpdatePost_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_UpdateVPC_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["PostId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("PostId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["PostId"] = arg0
+	var arg1 *model.NewVpc
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalONewVPC2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐNewVpc(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_GetOnePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_GetOneVPC_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -513,6 +695,156 @@ func (ec *executionContext) fieldContext_Mutation_UpdatePost(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_UpdatePost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_CreateVPC(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateVPC(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateVpc(rctx, fc.Args["input"].(model.NewVpc))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Vpc)
+	fc.Result = res
+	return ec.marshalNVPC2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpc(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_CreateVPC(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VPC_id(ctx, field)
+			case "AmazonProvidedIpv6CidrBlock":
+				return ec.fieldContext_VPC_AmazonProvidedIpv6CidrBlock(ctx, field)
+			case "CidrBlock":
+				return ec.fieldContext_VPC_CidrBlock(ctx, field)
+			case "EnableDnsHostNames":
+				return ec.fieldContext_VPC_EnableDnsHostNames(ctx, field)
+			case "EnableDnsSupport":
+				return ec.fieldContext_VPC_EnableDnsSupport(ctx, field)
+			case "InstanceTenancy":
+				return ec.fieldContext_VPC_InstanceTenancy(ctx, field)
+			case "Ipv6CidrBlock":
+				return ec.fieldContext_VPC_Ipv6CidrBlock(ctx, field)
+			case "Ipv6Pool":
+				return ec.fieldContext_VPC_Ipv6Pool(ctx, field)
+			case "Region":
+				return ec.fieldContext_VPC_Region(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VPC", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_CreateVPC_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_UpdateVPC(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdateVPC(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateVpc(rctx, fc.Args["PostId"].(int), fc.Args["input"].(*model.NewVpc))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Vpc)
+	fc.Result = res
+	return ec.marshalNVPC2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpc(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_UpdateVPC(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VPC_id(ctx, field)
+			case "AmazonProvidedIpv6CidrBlock":
+				return ec.fieldContext_VPC_AmazonProvidedIpv6CidrBlock(ctx, field)
+			case "CidrBlock":
+				return ec.fieldContext_VPC_CidrBlock(ctx, field)
+			case "EnableDnsHostNames":
+				return ec.fieldContext_VPC_EnableDnsHostNames(ctx, field)
+			case "EnableDnsSupport":
+				return ec.fieldContext_VPC_EnableDnsSupport(ctx, field)
+			case "InstanceTenancy":
+				return ec.fieldContext_VPC_InstanceTenancy(ctx, field)
+			case "Ipv6CidrBlock":
+				return ec.fieldContext_VPC_Ipv6CidrBlock(ctx, field)
+			case "Ipv6Pool":
+				return ec.fieldContext_VPC_Ipv6Pool(ctx, field)
+			case "Region":
+				return ec.fieldContext_VPC_Region(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VPC", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_UpdateVPC_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -958,6 +1290,145 @@ func (ec *executionContext) fieldContext_Query_GetOnePost(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_GetAllVPCs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_GetAllVPCs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetAllVPCs(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Vpc)
+	fc.Result = res
+	return ec.marshalNVPC2ᚕᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpcᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_GetAllVPCs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VPC_id(ctx, field)
+			case "AmazonProvidedIpv6CidrBlock":
+				return ec.fieldContext_VPC_AmazonProvidedIpv6CidrBlock(ctx, field)
+			case "CidrBlock":
+				return ec.fieldContext_VPC_CidrBlock(ctx, field)
+			case "EnableDnsHostNames":
+				return ec.fieldContext_VPC_EnableDnsHostNames(ctx, field)
+			case "EnableDnsSupport":
+				return ec.fieldContext_VPC_EnableDnsSupport(ctx, field)
+			case "InstanceTenancy":
+				return ec.fieldContext_VPC_InstanceTenancy(ctx, field)
+			case "Ipv6CidrBlock":
+				return ec.fieldContext_VPC_Ipv6CidrBlock(ctx, field)
+			case "Ipv6Pool":
+				return ec.fieldContext_VPC_Ipv6Pool(ctx, field)
+			case "Region":
+				return ec.fieldContext_VPC_Region(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VPC", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_GetOneVPC(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_GetOneVPC(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetOneVpc(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Vpc)
+	fc.Result = res
+	return ec.marshalNVPC2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpc(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_GetOneVPC(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VPC_id(ctx, field)
+			case "AmazonProvidedIpv6CidrBlock":
+				return ec.fieldContext_VPC_AmazonProvidedIpv6CidrBlock(ctx, field)
+			case "CidrBlock":
+				return ec.fieldContext_VPC_CidrBlock(ctx, field)
+			case "EnableDnsHostNames":
+				return ec.fieldContext_VPC_EnableDnsHostNames(ctx, field)
+			case "EnableDnsSupport":
+				return ec.fieldContext_VPC_EnableDnsSupport(ctx, field)
+			case "InstanceTenancy":
+				return ec.fieldContext_VPC_InstanceTenancy(ctx, field)
+			case "Ipv6CidrBlock":
+				return ec.fieldContext_VPC_Ipv6CidrBlock(ctx, field)
+			case "Ipv6Pool":
+				return ec.fieldContext_VPC_Ipv6Pool(ctx, field)
+			case "Region":
+				return ec.fieldContext_VPC_Region(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VPC", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_GetOneVPC_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -1082,6 +1553,378 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_id(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_AmazonProvidedIpv6CidrBlock(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_AmazonProvidedIpv6CidrBlock(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AmazonProvidedIpv6CidrBlock, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_AmazonProvidedIpv6CidrBlock(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_CidrBlock(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_CidrBlock(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CidrBlock, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_CidrBlock(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_EnableDnsHostNames(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_EnableDnsHostNames(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EnableDNSHostNames, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_EnableDnsHostNames(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_EnableDnsSupport(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_EnableDnsSupport(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EnableDNSSupport, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_EnableDnsSupport(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_InstanceTenancy(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_InstanceTenancy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.InstanceTenancy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_InstanceTenancy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_Ipv6CidrBlock(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_Ipv6CidrBlock(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Ipv6CidrBlock, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_Ipv6CidrBlock(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_Ipv6Pool(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_Ipv6Pool(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Ipv6Pool, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_Ipv6Pool(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VPC_Region(ctx context.Context, field graphql.CollectedField, obj *model.Vpc) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VPC_Region(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Region, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VPC_Region(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VPC",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2934,6 +3777,35 @@ func (ec *executionContext) unmarshalInputNewPost(ctx context.Context, obj inter
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewVPC(ctx context.Context, obj interface{}) (model.NewVpc, error) {
+	var it model.NewVpc
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"CidrBlock"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "CidrBlock":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CidrBlock"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CidrBlock = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2974,6 +3846,24 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_UpdatePost(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "CreateVPC":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_CreateVPC(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "UpdateVPC":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_UpdateVPC(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -3125,6 +4015,52 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "GetAllVPCs":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_GetAllVPCs(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "GetOneVPC":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_GetOneVPC(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "__type":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -3136,6 +4072,66 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var vPCImplementors = []string{"VPC"}
+
+func (ec *executionContext) _VPC(ctx context.Context, sel ast.SelectionSet, obj *model.Vpc) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, vPCImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("VPC")
+		case "id":
+
+			out.Values[i] = ec._VPC_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "AmazonProvidedIpv6CidrBlock":
+
+			out.Values[i] = ec._VPC_AmazonProvidedIpv6CidrBlock(ctx, field, obj)
+
+		case "CidrBlock":
+
+			out.Values[i] = ec._VPC_CidrBlock(ctx, field, obj)
+
+		case "EnableDnsHostNames":
+
+			out.Values[i] = ec._VPC_EnableDnsHostNames(ctx, field, obj)
+
+		case "EnableDnsSupport":
+
+			out.Values[i] = ec._VPC_EnableDnsSupport(ctx, field, obj)
+
+		case "InstanceTenancy":
+
+			out.Values[i] = ec._VPC_InstanceTenancy(ctx, field, obj)
+
+		case "Ipv6CidrBlock":
+
+			out.Values[i] = ec._VPC_Ipv6CidrBlock(ctx, field, obj)
+
+		case "Ipv6Pool":
+
+			out.Values[i] = ec._VPC_Ipv6Pool(ctx, field, obj)
+
+		case "Region":
+
+			out.Values[i] = ec._VPC_Region(ctx, field, obj)
 
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -3501,6 +4497,11 @@ func (ec *executionContext) unmarshalNNewPost2goᚑgraphqlᚑapiᚋgraphᚋmodel
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNNewVPC2goᚑgraphqlᚑapiᚋgraphᚋmodelᚐNewVpc(ctx context.Context, v interface{}) (model.NewVpc, error) {
+	res, err := ec.unmarshalInputNewVPC(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNPost2goᚑgraphqlᚑapiᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v model.Post) graphql.Marshaler {
 	return ec._Post(ctx, sel, &v)
 }
@@ -3572,6 +4573,64 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNVPC2goᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpc(ctx context.Context, sel ast.SelectionSet, v model.Vpc) graphql.Marshaler {
+	return ec._VPC(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNVPC2ᚕᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpcᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Vpc) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNVPC2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpc(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNVPC2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐVpc(ctx context.Context, sel ast.SelectionSet, v *model.Vpc) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._VPC(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -3858,6 +4917,14 @@ func (ec *executionContext) unmarshalONewPost2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmo
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputNewPost(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalONewVPC2ᚖgoᚑgraphqlᚑapiᚋgraphᚋmodelᚐNewVpc(ctx context.Context, v interface{}) (*model.NewVpc, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputNewVPC(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

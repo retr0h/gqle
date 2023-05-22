@@ -1,6 +1,6 @@
 # GQLe
 
-Graph QL example
+Graph QL example of an infrastructure provider for Amazon Web Services.
 
 ## License
 

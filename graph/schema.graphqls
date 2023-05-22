@@ -8,7 +8,8 @@ type Post {
   Updated_At: String!
 }
 
-type Query {
+extend type Query {
+# type Query {
   GetAllPosts: [Post!]!
   GetOnePost(id: Int!): Post!
 }
@@ -22,7 +23,7 @@ input NewPost {
   Updated_At: String
 }
 
-type Mutation {
+extend type Mutation {
   CreatePost(input: NewPost!): Post!
   UpdatePost(PostId: Int!, input: NewPost): Post!
 }

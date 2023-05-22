@@ -11,6 +11,10 @@ type NewPost struct {
 	UpdatedAt   *string `json:"Updated_At,omitempty"`
 }
 
+type NewVpc struct {
+	CidrBlock *string `json:"CidrBlock,omitempty"`
+}
+
 type Post struct {
 	ID          int    `json:"id"`
 	Title       string `json:"Title"`
@@ -19,4 +23,16 @@ type Post struct {
 	Hero        string `json:"Hero"`
 	PublishedAt string `json:"Published_At"`
 	UpdatedAt   string `json:"Updated_At"`
+}
+
+type Vpc struct {
+	ID                          int     `json:"id"`
+	AmazonProvidedIpv6CidrBlock *bool   `json:"AmazonProvidedIpv6CidrBlock,omitempty"`
+	CidrBlock                   *string `json:"CidrBlock,omitempty"`
+	EnableDNSHostNames          *bool   `json:"EnableDnsHostNames,omitempty"`
+	EnableDNSSupport            *bool   `json:"EnableDnsSupport,omitempty"`
+	InstanceTenancy             *string `json:"InstanceTenancy,omitempty"`
+	Ipv6CidrBlock               *string `json:"Ipv6CidrBlock,omitempty"`
+	Ipv6Pool                    *string `json:"Ipv6Pool,omitempty"`
+	Region                      *string `json:"Region,omitempty"`
 }

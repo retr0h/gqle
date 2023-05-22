@@ -1,35 +1,49 @@
 package main
 
 import (
+	"go-graphql-api/graph"
 	"log"
 	"net/http"
 	"os"
 
-	"go-graphql-api/graph"
-
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"go-graphql-api/database"
+	"github.com/retr0h/gqle/config"
+	"github.com/retr0h/gqle/database"
+	"github.com/sirupsen/logrus"
 )
 
 const defaultPort = "8080"
 
 func main() {
+	logger := &logrus.Logger{
+		Out:       os.Stderr,
+		Formatter: &logrus.JSONFormatter{PrettyPrint: true},
+		Hooks:     make(logrus.LevelHooks),
+		Level:     logrus.InfoLevel,
+	}
+	config := config.New(logger)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	// establish connection
-	database.ConnectDB()
-	// create db
-	database.CreateDB()
-	// migrate the db with Post model
-	database.MigrateDB()
+	logger.WithFields(logrus.Fields{
+		"port": port,
+	}).Info("Serving GQL API")
+
+	db := database.New(
+		config,
+		logger,
+	)
+	db.Connect()
+	db.Migrate()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
 		Resolvers: &graph.Resolver{
-			Database: database.DBInstance,
+			Database: db.Database,
+			Config:   config,
 		},
 	}))
 
