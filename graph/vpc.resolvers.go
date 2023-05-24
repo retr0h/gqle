@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"go-graphql-api/graph/model"
+	"github.com/retr0h/gqle/graph/model"
 )
 
 // CreateVpc is the resolver for the CreateVPC field.

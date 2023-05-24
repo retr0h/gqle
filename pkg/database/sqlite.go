@@ -1,8 +1,9 @@
 package database
 
 import (
-	"github.com/retr0h/gqle/config"
 	"github.com/retr0h/gqle/dbmodel"
+	"github.com/retr0h/gqle/pkg/aws/clients/vpc"
+	"github.com/retr0h/gqle/pkg/config"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -38,7 +39,7 @@ func (db *Database) Connect() {
 // Migrate migrate the database
 func (db *Database) Migrate() {
 	db.Database.AutoMigrate(&dbmodel.Post{})
-	db.Database.AutoMigrate(&dbmodel.VPC{})
+	db.Database.AutoMigrate(&vpc.VPC{})
 	db.logger.WithFields(logrus.Fields{
 		"DBName": db.config.DBName,
 		"DSN":    db.config.DSN,

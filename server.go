@@ -1,15 +1,16 @@
 package main
 
 import (
-	"go-graphql-api/graph"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/retr0h/gqle/graph"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/retr0h/gqle/config"
-	"github.com/retr0h/gqle/database"
+	"github.com/retr0h/gqle/pkg/config"
+	"github.com/retr0h/gqle/pkg/database"
 	"github.com/sirupsen/logrus"
 )
 

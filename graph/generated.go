@@ -8,10 +8,11 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"go-graphql-api/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"
+
+	"github.com/retr0h/gqle/graph/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -41,8 +42,7 @@ type ResolverRoot interface {
 	Query() QueryResolver
 }
 
-type DirectiveRoot struct {
-}
+type DirectiveRoot struct{}
 
 type ComplexityRoot struct {
 	Mutation struct {
